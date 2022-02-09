@@ -1,4 +1,8 @@
 <script>
+
+{% autoescape false %}
+    var allLocales =  {{ get_locale_prefixes() }};
+{% endautoescape %}
     var i18nStrings = {
         jan_long: "{{ _Q('January') }}",
         feb_long: "{{ _Q('February') }}",
