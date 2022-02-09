@@ -8,6 +8,7 @@
         width: 220px;
         text-align: center;
         vertical-align: top;
+        box-sizing: content-box;
     }
     .calendar-month:hover {
         background-color: #eeeeee;
