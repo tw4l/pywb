@@ -9,20 +9,27 @@ import Vue from "vue/dist/vue.esm.browser";
 // ===========================================================================
 export function main(staticPrefix, url, prefix, timestamp, logoUrl, locale, i18nStrings) {
   PywbI18N.init(locale, i18nStrings);
-  const loadingSpinner = new LoadingSpinner({text: PywbI18N.instance?.getText('Loading...')}); // bootstrap loading-spinner EARLY ON
-  new CDXLoader(staticPrefix, url, prefix, timestamp, logoUrl, loadingSpinner);
+  new CDXLoader(staticPrefix, url, prefix, timestamp, logoUrl);
 }
 
 // ===========================================================================
 class CDXLoader {
-  constructor(staticPrefix, url, prefix, timestamp, logoUrl, loadingSpinner) {
-    this.loadingSpinner = loadingSpinner;
+  constructor(staticPrefix, url, prefix, timestamp, logoUrl) {
+    this.loadingSpinner = null;
+    this.loaded = false;
     this.opts = {};
     this.prefix = prefix;
     this.staticPrefix = staticPrefix;
     this.logoUrl = logoUrl;
 
     this.isReplay = (timestamp !== undefined);
+
+    setTimeout(() => {
+      if (!this.loaded) {
+        this.loadingSpinner = new LoadingSpinner({text: PywbI18N.instance?.getText('Loading...'), isSmall: !!timestamp}); // bootstrap loading-spinner EARLY ON
+        this.loadingSpinner.setOn();
+      }
+    }, 500);
 
     if (this.isReplay) {
       window.WBBanner = new VueBannerWrapper(this, url);
@@ -75,7 +82,12 @@ class CDXLoader {
     // });
 
     app.$on("show-snapshot", this.loadSnapshot.bind(this));
-    app.$on("data-set-and-render-completed", () => this.loadingSpinner.setOff()); // only turn off loading-spinner AFTER app has told us it is DONE DONE
+    app.$on("data-set-and-render-completed", () => {
+      if (this.loadingSpinner) {
+        this.loadingSpinner.setOff(); // only turn off loading-spinner AFTER app has told us it is DONE DONE
+      }
+      this.loaded = true;
+    });
 
     return app;
   }
@@ -100,7 +112,7 @@ class CDXLoader {
   }
 
   async loadCDX(queryURL) {
-    this.loadingSpinner.setOn(); // start loading-spinner when CDX loading begins
+    //  this.loadingSpinner.setOn(); // start loading-spinner when CDX loading begins
     const queryWorker = new Worker(this.staticPrefix + "/queryWorker.js");
 
     const p = new Promise((resolve) => {
