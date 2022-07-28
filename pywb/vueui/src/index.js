@@ -7,20 +7,21 @@ import Vue from "vue/dist/vue.esm.browser";
 
 
 // ===========================================================================
-export function main(staticPrefix, url, prefix, timestamp, logoUrl, locale, allLocales, i18nStrings) {
+export function main(staticPrefix, url, prefix, timestamp, logoUrl, navbarBackground, locale, allLocales, i18nStrings) {
   PywbI18N.init(locale, i18nStrings);
-  new CDXLoader(staticPrefix, url, prefix, timestamp, logoUrl, allLocales);
+  new CDXLoader(staticPrefix, url, prefix, timestamp, logoUrl, navbarBackground, allLocales);
 }
 
 // ===========================================================================
 class CDXLoader {
-  constructor(staticPrefix, url, prefix, timestamp, logoUrl, allLocales) {
+  constructor(staticPrefix, url, prefix, timestamp, logoUrl, navbarBackground, allLocales) {
     this.loadingSpinner = null;
     this.loaded = false;
     this.opts = {};
     this.prefix = prefix;
     this.staticPrefix = staticPrefix;
     this.logoUrl = logoUrl;
+    this.navbarBackground = navbarBackground;
 
     this.isReplay = (timestamp !== undefined);
 
@@ -56,7 +57,7 @@ class CDXLoader {
 
     const logoImg = this.staticPrefix + "/" + (this.logoUrl ? this.logoUrl : "pywb-logo-sm.png");
 
-    this.app = this.initApp({logoImg, url, allLocales});
+    this.app = this.initApp({logoImg, navbarBackground, url, allLocales});
     this.loadCDX(queryURL).then((cdxList) => {
       this.setAppData(cdxList, timestamp ? {url, timestamp}:null);
     });
@@ -107,6 +108,7 @@ class CDXLoader {
     this.app.setData(new PywbData(cdxList));
 
     if (snapshot) {
+      this.app.hideBannerUtilities();
       this.app.setSnapshot(snapshot);
     }
   }
@@ -179,6 +181,10 @@ class VueBannerWrapper
 
     if (type === "load" || type === "replace-url") {
       const surt = this.getSurt(event.data.url);
+
+      if (event.data.title) {
+        this.loader.app.updateTitle(event.data.title);
+      }
 
       if (surt !== this.lastSurt) {
         this.loader.updateSnapshot(event.data.url, event.data.ts);

@@ -1,17 +1,23 @@
 <template>
-<div class="timeline-linear">
-  <div class="title">
-    <div>{{ period.getFullReadableId() }}</div>
-    <div>{{ $root._(period.snapshotCount !== 1 ? '{count} captures':'{count} capture', {count: period.snapshotCount}) }}</div>
-  </div>
+  <div class="timeline-linear">
+    <div class="title">
+      <div>{{ period.getFullReadableId() }}</div>
+      <div>{{ $root._(period.snapshotCount !== 1 ? '{count} captures':'{count} capture', {count: period.snapshotCount}) }}</div>
+    </div>
 
-  <div class="list">
-    <div v-for="period in snapshotPeriods">
-      <a :href="$root.config.prefix + period.id + '/' + $root.config.url" class="link" >{{period.snapshot.getTimeFormatted()}}</a>
-      <span v-if="isCurrentSnapshot(period)" class="current">{{$root._('current')}}</span>
+    <div class="list">
+      <div v-for="snapshotPeriod in snapshotPeriods">
+        <a
+          :href="$root.config.prefix + snapshotPeriod.id + '/' + $root.config.url"
+          class="link"
+          @keyup.enter="gotoSnapshot(snapshotPeriod)"
+          tabindex="1">
+          {{ snapshotPeriod.snapshot.getTimeFormatted() }}
+        </a>
+        <span v-if="isCurrentSnapshot(period)" class="current">{{$root._('current')}}</span>
+      </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -30,6 +36,9 @@ export default {
   methods: {
     isCurrentSnapshot(period) {
       return this.currentSnapshot && this.currentSnapshot.id === period.snapshot.id;
+    },
+    gotoSnapshot(period) {
+      this.$app.gotoSnapshot(period, this.period);
     }
   }
 }
@@ -42,6 +51,7 @@ export default {
   background-color: white;
   border: 1px solid gray;
   border-radius: 5px;
+  z-index: 1100;
 }
 .timeline-linear .list {
   max-height: 80vh;
