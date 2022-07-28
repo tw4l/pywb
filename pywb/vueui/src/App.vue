@@ -1,58 +1,66 @@
 <template>
   <div class="app" :class="{expanded: showTimelineView}" data-app="webrecorder-replay-app">
     <div class="banner">
-      <div class="line">
+      <div class="banner-line">
         <div class="logo"><a href="/"><img :src="config.logoImg"/></a></div>
+        <div class="snapshot-url">
+          <form @submit="gotoUrl">
+            <input id="theurl" type="text" :value="config.url"></input>
+          </form>
+        </div>
+        <div class="toggles">
+          <button
+            class="btn btn-light btn-sm"
+            :class="{active: showFullView}"
+            :aria-pressed="(showFullView ? true : false)"
+            @click="showFullView = !showFullView"
+            :title="(showTimelineView ? _('show calendar'):_('hide calendar'))">
+            <img src="/static/calendar-icon.png" />
+          </button>
+          <button
+            class="btn btn-light btn-sm"
+            :class="{active: showTimelineView || showFullView }"
+            :aria-pressed="(showTimelineView || showFullView ? true : false)"
+            :disabled="showFullView"
+            @click="showTimelineView = !showTimelineView"
+            :title="(showTimelineView ? _('show timeline'):_('hide timeline'))">
+            <img src="/static/timeline-icon.png" />
+          </button>
+          <ul class="lang-select" role="listbox" :aria-activedescendant="config.locale"
+            :aria-labelledby="_('Language select')">
+            <li v-for="(locPath, key) in config.allLocales" role="option" :id="key">
+              <a :href="locPath + (currentSnapshot ? currentSnapshot.id : '*') + '/' + config.url">{{ key }}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="snapshot-title" v-if="currentSnapshot && !showFullView">
+        <span v-if="config.title">{{ config.title }}</span>
+        {{_('Current Capture')}}: {{currentSnapshot.getTimeDateFormatted()}}
+      </div>
+      <div class="line" v-if="showFullView || (currentPeriod && showTimelineView)">
         <div class="timeline-wrap">
-          <div class="line">
-            <div class="breadcrumbs-wrap">
-              <TimelineBreadcrumbs
-                  v-if="currentPeriod && showTimelineView"
-                  :period="currentPeriod"
-                  @goto-period="gotoPeriod"
-              ></TimelineBreadcrumbs>
-              <span v-if="!showTimelineView" v-html="'&nbsp;'"></span><!-- for spacing -->
-            </div>
-
-            <div class="toggles">
-              <span class="toggle" :class="{expanded: showFullView}" @click="showFullView = !showFullView" :title="(showTimelineView ? _('show calendar'):_('hide calendar'))">
-                <img src="/static/calendar-icon.png" />
-              </span>
-              <span class="toggle" :class="{expanded: showTimelineView}" @click="showTimelineView = !showTimelineView" :title="(showTimelineView ? _('show timeline'):_('hide timeline'))">
-                <img src="/static/timeline-icon.png" />
-              </span>
-              <ul class="lang-select" role="listbox" :aria-activedescendant="config.locale"
-                :aria-labelledby="_('Language select')">
-                <li v-for="(locPath, key) in config.allLocales" role="option" :id="key">
-                  <a :href="locPath + (currentSnapshot ? currentSnapshot.id : '*') + '/' + config.url">{{ key }}</a>
-                </li>
-              </ul>
-            </div>
+          <div class="breadcrumbs-wrap">
+            <TimelineBreadcrumbs
+              :period="currentPeriod"
+              @goto-period="gotoPeriod"
+            ></TimelineBreadcrumbs>
           </div>
           <Timeline
-                  v-if="currentPeriod && showTimelineView"
-                  :period="currentPeriod"
-                  :highlight="timelineHighlight"
-                  :current-snapshot="currentSnapshot"
-                  :max-zoom-level="maxTimelineZoomLevel"
-                  @goto-period="gotoPeriod"
+            :period="currentPeriod"
+            :highlight="timelineHighlight"
+            :current-snapshot="currentSnapshot"
+            :max-zoom-level="maxTimelineZoomLevel"
+            @goto-period="gotoPeriod"
           ></Timeline>
         </div>
       </div>
     </div>
-    <div class="snapshot-title">
-      <form @submit="gotoUrl">
-        <input id="theurl" type="text" :value="config.url"></input>
-      </form>
-      <div v-if="currentSnapshot && !showFullView">
-        <span v-if="config.title">{{ config.title }}</span>
-        {{_('Current Capture')}}: {{currentSnapshot.getTimeDateFormatted()}}
-      </div>
-    </div>
-    <CalendarYear v-if="showFullView && currentPeriod && currentPeriod.children.length"
-                  :period="currentPeriod"
-                  :current-snapshot="currentSnapshot"
-                   @goto-period="gotoPeriod">
+    <CalendarYear
+      v-if="showFullView && currentPeriod && currentPeriod.children.length"
+      :period="currentPeriod"
+      :current-snapshot="currentSnapshot"
+       @goto-period="gotoPeriod">
     </CalendarYear>
   </div>
 </template>
@@ -139,6 +147,7 @@ export default {
         this.$emit("show-snapshot", snapshot);
       }
       this.showFullView = false;
+      this.showTimelineView = false;
     },
     gotoUrl(event) {
       event.preventDefault();
@@ -186,7 +195,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
   .app {
     font-family: Calibri, Arial, sans-serif;
     border-bottom: 1px solid lightcoral;
@@ -205,17 +214,22 @@ export default {
     height: 80vh;
   }
   .logo {
-    margin-right: 30px;
     width: 180px;
   }
   .banner {
+    margin-top: 10px;
     width: 100%;
     max-width: 1200px; /* limit width */
     position: relative;
   }
-  .banner .line {
+  .line {
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
+  }
+  .banner-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
   }
 
   .banner .logo {
@@ -230,60 +244,56 @@ export default {
   }
 
   .banner .timeline-wrap {
-    flex-grow: 2;
-    overflow-x: hidden;
-    text-align: left;
-    margin: 0 25px;
-    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 800px;
   }
 
   .timeline-wrap .line .breadcrumbs-wrap {
     display: inline-block;
     flex-grow: 1;
   }
-  .timeline-wrap .line .toggles {
-    display: inline-block;
-    flex-shrink: 1;
+  .toggles {
+    display: flex;
+    align-items: center;
   }
 
-  .toggles > .toggle {
-    display: inline-block;
-    border-radius: 5px;
-    padding: 0 4px;
-    height: 100%;
-    cursor: zoom-in;
+  .toggles button {
+    margin-left: 5px;
   }
-  .toggles > .toggle > img {
-    height: 18px;
-    display: inline-block;
-    margin-top: 2px;
+
+  .toggles button img {
+    height: 20px;
   }
-  .toggles .toggle:hover {
-    background-color: #eeeeee;
-  }
-  .toggles .toggle.expanded {
-    background-color: #eeeeee;
-    cursor: zoom-out;
-  }
-  .snapshot-title {
+
+  .snapshot-url {
+    display: flex;
+    align-items: center;
     text-align: center;
     font-weight: bold;
     font-size: 16px;
   }
+  .snapshot-title {
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   #theurl {
-    width: 400px;
+    width: 500px;
   }
 
   ul.lang-select {
-      display: inline-block;
-      list-style-type: none;
-      margin: 0;
-      padding: 0 24px 0 8px;
+    display: flex;
+    align-items: center;
+    list-style-type: none;
+    margin-bottom: 0;
   }
 
   ul.lang-select li {
     display: inline-block;
-    padding-left: 6px;
+    padding: 0 2px 0 2px;
     font-weight: bold;
     font-size: smaller;
   }
