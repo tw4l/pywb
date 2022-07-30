@@ -107,6 +107,7 @@ class CDXLoader {
     this.app.setData(new PywbData(cdxList));
 
     if (snapshot) {
+      this.app.hideBannerUtilities();
       this.app.setSnapshot(snapshot);
     }
   }

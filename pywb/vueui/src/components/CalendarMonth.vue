@@ -9,14 +9,13 @@
         text-align: center;
         vertical-align: top;
         box-sizing: content-box;
+        border-radius: 10px;
     }
     .calendar-month:hover {
         background-color: #eeeeee;
-        border-radius: 10px;
     }
     .calendar-month.current {
         background-color: #fff7ce;
-        border-radius: 5px;
     }
     .calendar-month.contains-current-snapshot {
         border: solid 1px red;

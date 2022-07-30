@@ -1,67 +1,113 @@
 <template>
-  <div class="app" :class="{expanded: showTimelineView}" data-app="webrecorder-replay-app">
-    <div class="banner">
-      <div class="banner-line">
-        <div class="logo"><a href="/"><img :src="config.logoImg"/></a></div>
-        <div class="snapshot-url">
-          <form @submit="gotoUrl">
-            <input id="theurl" type="text" :value="config.url"></input>
-          </form>
-        </div>
-        <div class="toggles">
-          <button
-            class="btn btn-light btn-sm"
-            :class="{active: showFullView}"
-            :aria-pressed="(showFullView ? true : false)"
-            @click="showFullView = !showFullView"
-            :title="(showTimelineView ? _('show calendar'):_('hide calendar'))">
-            <img src="/static/calendar-icon.png" />
-          </button>
-          <button
-            class="btn btn-light btn-sm"
-            :class="{active: showTimelineView || showFullView }"
-            :aria-pressed="(showTimelineView || showFullView ? true : false)"
-            :disabled="showFullView"
-            @click="showTimelineView = !showTimelineView"
-            :title="(showTimelineView ? _('show timeline'):_('hide timeline'))">
-            <img src="/static/timeline-icon.png" />
-          </button>
-          <ul class="lang-select" role="listbox" :aria-activedescendant="config.locale"
-            :aria-labelledby="_('Language select')">
-            <li v-for="(locPath, key) in config.allLocales" role="option" :id="key">
-              <a :href="locPath + (currentSnapshot ? currentSnapshot.id : '*') + '/' + config.url">{{ key }}</a>
-            </li>
-          </ul>
-        </div>
+  <div class="app" :class="{expanded: showTimelineView || showFullView }" data-app="webrecorder-replay-app">
+    <!-- Top navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top top-navbar">
+      <a class="navbar-brand" href="/">
+        <img :src="config.logoImg" alt="_('pywb logo')">
+      </a>
+      <form class="form-inline my-2 my-md-0" @submit="gotoUrl">
+        <input id="theurl" type="text" :value="config.url"></input>
+      </form>
+      <button
+        class="navbar-toggler btn btn-sm"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarCollapse"
+        aria-controls="navbarCollapse"
+        aria-expanded="false"
+        aria-label="_('Toggle navigation')">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav my-2 ml-3" id="toggles">
+          <li class="nav-item active">
+            <button
+              class="btn btn-sm btn-outline-dark"
+              :class="{active: showFullView}"
+              :aria-pressed="(showFullView ? true : false)"
+              @click="showFullView = !showFullView"
+              :title="(showFullView ? _('Hide calendar') : _('Show calendar'))">
+              <i class="far fa-calendar-alt"></i>
+            </button>
+          </li>
+          <li class="nav-item ml-1">
+            <button
+              class="btn btn-sm btn-outline-dark"
+              :class="{active: showTimelineView || showFullView }"
+              :aria-pressed="(showTimelineView || showFullView ? true : false)"
+              @click="setTimelineView"
+              :title="((showTimelineView || showFullView) ? _('Hide timeline') : _('Show timeline'))">
+              <i class="far fa-chart-bar"></i>
+            </button>
+          </li>
+          <li class="nav-item dropdown ml-1" v-if="localesAreSet">
+            <button
+              class="btn btn-sm btn-outline-dark dropdown-toggle"
+              type="button"
+              id="locale-dropdown"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+              :title="_('Select language')">
+              <i class="fas fa-globe-africa"></i>
+            </button>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="locale-dropdown">
+              <a
+                class="dropdown-item"
+                v-for="(locPath, key) in config.allLocales"
+                :key="key"
+                :href="locPath + (currentSnapshot ? currentSnapshot.id : '*') + '/' + config.url">
+                {{ key }}
+              </a>
+            </div>
+          </li>
+        </ul>
       </div>
-      <div class="snapshot-title" v-if="currentSnapshot && !showFullView">
-        <span v-if="config.title">{{ config.title }}</span>
-        {{_('Current Capture')}}: {{currentSnapshot.getTimeDateFormatted()}}
-      </div>
-      <div class="line" v-if="showFullView || (currentPeriod && showTimelineView)">
-        <div class="timeline-wrap">
-          <div class="breadcrumbs-wrap">
+    </nav>
+
+    <!-- Capture title and date -->
+    <nav
+      class="navbar navbar-light bg-light justify-content-center title-nav fixed-top"
+      id="second-navbar"
+      v-if="currentSnapshot">
+      <span v-if="config.title">{{ config.title }}</span>
+      <span class="strong mr-2">{{_('Current Capture')}}:</span>{{currentSnapshot.getTimeDateFormatted()}}
+    </nav>
+
+    <!-- Timeline -->
+    <div class="card timeline-wrap">
+      <div class="card-body" v-if="showFullView || (currentPeriod && showTimelineView)">
+        <div class="row">
+          <div class="col col-12">
             <TimelineBreadcrumbs
               :period="currentPeriod"
               @goto-period="gotoPeriod"
             ></TimelineBreadcrumbs>
           </div>
-          <Timeline
-            :period="currentPeriod"
-            :highlight="timelineHighlight"
-            :current-snapshot="currentSnapshot"
-            :max-zoom-level="maxTimelineZoomLevel"
-            @goto-period="gotoPeriod"
-          ></Timeline>
+          <div class="col col-12 mt-2">
+            <Timeline
+              :period="currentPeriod"
+              :highlight="timelineHighlight"
+              :current-snapshot="currentSnapshot"
+              :max-zoom-level="maxTimelineZoomLevel"
+              @goto-period="gotoPeriod"
+            ></Timeline>
+          </div>
         </div>
+      </div>    
+    </div>
+
+    <!-- Calendar -->
+    <div class="card" v-if="showFullView && currentPeriod && currentPeriod.children.length">
+      <div class="card-body">
+        <CalendarYear
+          :period="currentPeriod"
+          :current-snapshot="currentSnapshot"
+           @goto-period="gotoPeriod">
+        </CalendarYear>
       </div>
     </div>
-    <CalendarYear
-      v-if="showFullView && currentPeriod && currentPeriod.children.length"
-      :period="currentPeriod"
-      :current-snapshot="currentSnapshot"
-       @goto-period="gotoPeriod">
-    </CalendarYear>
+    
   </div>
 </template>
 
@@ -87,7 +133,8 @@ export default {
       maxTimelineZoomLevel: PywbPeriod.Type.day,
       config: {
         title: "",
-        initialView: {}
+        initialView: {},
+        allLocales: {}
       },
       timelineHighlight: false,
       locales: [],
@@ -100,6 +147,9 @@ export default {
     sessionStorageUrlKey() {
       // remove http(s), www and trailing slash
       return 'zoom__' + this.config.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+    },
+    localesAreSet() {
+      return Object.entries(this.config.allLocales).length > 0;
     }
   },
   methods: {
@@ -146,8 +196,7 @@ export default {
       if (reloadIFrame !== false) {
         this.$emit("show-snapshot", snapshot);
       }
-      this.showFullView = false;
-      this.showTimelineView = false;
+      this.hideBannerUtilities();
     },
     gotoUrl(event) {
       event.preventDefault();
@@ -190,126 +239,98 @@ export default {
       this.config.title = view.title;
 
       this.gotoSnapshot(snapshot);
+    },
+    setTimelineView() {
+      this.showTimelineView = !this.showTimelineView;
+      if (this.showTimelineView === true) {
+        this.showFullView = false;
+      }
+    },
+    hideBannerUtilities() {
+      this.showFullView = false;
+      this.showTimelineView = false;
     }
   }
 };
 </script>
 
-<style scoped>
+<style>
+  body {
+    padding-top: 87px !important;
+  }
   .app {
     font-family: Calibri, Arial, sans-serif;
-    border-bottom: 1px solid lightcoral;
+    /*border-bottom: 1px solid lightcoral;*/
     width: 100%;
   }
   .app.expanded {
-    height: 150px;
+    height: 130px;
   }
   .full-view {
     /*position: fixed;*/
     /*top: 150px;*/
     left: 0;
   }
+  .top-navbar {
+    z-index: 90;
+    padding: 2px 16px 0 16px;
+  }
+  .title-nav {
+    margin-top: 47px;
+    z-index: 80;
+  }
+  #navbarCollapse {
+    justify-content: right;
+  }
   .iframe iframe {
     width: 100%;
     height: 80vh;
   }
-  .logo {
-    width: 180px;
-  }
-  .banner {
-    margin-top: 10px;
-    width: 100%;
-    max-width: 1200px; /* limit width */
-    position: relative;
-  }
-  .line {
-    display: flex;
-    justify-content: center;
-  }
-  .banner-line {
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-  }
-
-  .banner .logo {
-    flex-shrink: initial;
-    /* for any content/image inside the logo container */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .banner .logo img {
-    flex-shrink: 1;
-  }
-
-  .banner .timeline-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    max-width: 800px;
-  }
-
-  .timeline-wrap .line .breadcrumbs-wrap {
-    display: inline-block;
-    flex-grow: 1;
-  }
-  .toggles {
-    display: flex;
-    align-items: center;
-  }
-
-  .toggles button {
-    margin-left: 5px;
-  }
-
-  .toggles button img {
-    height: 20px;
-  }
-
-  .snapshot-url {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    font-weight: bold;
-    font-size: 16px;
-  }
-  .snapshot-title {
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
   #theurl {
-    width: 500px;
+    width: 250px;
   }
-
-  ul.lang-select {
+  @media (min-width: 576px) {
+    #theurl {
+      width: 400px;
+    }
+  }
+  @media (min-width: 768px) {
+    #theurl {
+      width: 500px;
+    }
+  }
+  @media (min-width: 992px) {
+    #theurl {
+      width: 600px;
+    }
+  }
+  @media (min-width: 1200px) {
+    #theurl {
+      width: 900px;
+    }
+  }
+  #toggles {
+    align-items: center;
+  }
+  .breadcrumb-row {
     display: flex;
     align-items: center;
-    list-style-type: none;
-    margin-bottom: 0;
+    justify-content: center;
   }
-
-  ul.lang-select li {
-    display: inline-block;
-    padding: 0 2px 0 2px;
+  div.timeline-wrap div.card {
+    margin-top: 55px;
+  }
+  div.timeline-wrap div.card-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  div.timeline-wrap div.card-body div.row {
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+  .strong {
     font-weight: bold;
-    font-size: smaller;
   }
-
-  ul.lang-select li:not(:last-child):after {
-    content: ' / ';
-  }
-
-  ul.lang-select a:link,
-  ul.lang-select a:visited,
-  ul.lang-select a:active {
-    text-decoration: none;
-  }
-
-  ul.lang-select a:hover {
-    text-decoration: underline;
-  }
-
 </style>
