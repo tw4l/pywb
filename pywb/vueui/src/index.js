@@ -182,6 +182,10 @@ class VueBannerWrapper
     if (type === "load" || type === "replace-url") {
       const surt = this.getSurt(event.data.url);
 
+      if (event.data.title) {
+        this.loader.app.updateTitle(event.data.title);
+      }
+
       if (surt !== this.lastSurt) {
         this.loader.updateSnapshot(event.data.url, event.data.ts);
         this.lastSurt = surt;

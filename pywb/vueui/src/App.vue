@@ -73,8 +73,14 @@
       id="second-navbar"
       :style="navbarBackgroundStyle"
       v-if="currentSnapshot">
-      <span v-if="config.title">{{ config.title }}</span>
-      <span class="strong mr-2">{{_('Current Capture')}}:</span>{{currentSnapshot.getTimeDateFormatted()}}
+      <span class="strong mr-1">
+        {{_('Current Capture')}}: 
+        <span class="ml-1" v-if="config.title">
+          {{ config.title }}
+        </span>
+      </span>
+      <span class="mr-1" v-if="config.title">,</span>
+      {{currentSnapshot.getTimeDateFormatted()}}
     </nav>
 
     <!-- Timeline -->
@@ -242,9 +248,7 @@ export default {
       // convert to snapshot object to support proper rendering of time/date
       const snapshot = new PywbSnapshot(view, 0);
 
-      // set config current URL and title
       this.config.url = view.url;
-      this.config.title = view.title;
 
       this.gotoSnapshot(snapshot);
     },
@@ -257,6 +261,9 @@ export default {
     hideBannerUtilities() {
       this.showFullView = false;
       this.showTimelineView = false;
+    },
+    updateTitle(title) {
+      this.config.title = title;
     }
   }
 };
