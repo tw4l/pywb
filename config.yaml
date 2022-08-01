@@ -5,7 +5,7 @@ debug: true
 ui:
   vue_calendar_ui: true
   vue_timeline_banner: true
-  vue_navbar_background_hash: 1db79f
+  # vue_navbar_background_hash: f8f9fa
 
 collections:
     all: $all
