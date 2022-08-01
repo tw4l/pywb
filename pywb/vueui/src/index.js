@@ -7,14 +7,14 @@ import Vue from "vue/dist/vue.esm.browser";
 
 
 // ===========================================================================
-export function main(staticPrefix, url, prefix, timestamp, logoUrl, locale, allLocales, i18nStrings) {
+export function main(staticPrefix, url, prefix, timestamp, logoUrl, navbarBackground, locale, allLocales, i18nStrings) {
   PywbI18N.init(locale, i18nStrings);
-  new CDXLoader(staticPrefix, url, prefix, timestamp, logoUrl, allLocales);
+  new CDXLoader(staticPrefix, url, prefix, timestamp, logoUrl, navbarBackground, allLocales);
 }
 
 // ===========================================================================
 class CDXLoader {
-  constructor(staticPrefix, url, prefix, timestamp, logoUrl, allLocales) {
+  constructor(staticPrefix, url, prefix, timestamp, logoUrl, navbarBackground, allLocales) {
     this.loadingSpinner = null;
     this.loaded = false;
     this.opts = {};
@@ -55,8 +55,9 @@ class CDXLoader {
     }
 
     const logoImg = this.staticPrefix + "/" + (this.logoUrl ? this.logoUrl : "pywb-logo-sm.png");
+    const navbarBackgroundHash = this.navbarBackground ? this.navbarBackground : "f8f9fa";
 
-    this.app = this.initApp({logoImg, url, allLocales});
+    this.app = this.initApp({logoImg, navbarBackgroundHash, url, allLocales});
     this.loadCDX(queryURL).then((cdxList) => {
       this.setAppData(cdxList, timestamp ? {url, timestamp}:null);
     });

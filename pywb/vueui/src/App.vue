@@ -1,7 +1,9 @@
 <template>
   <div class="app" :class="{expanded: showTimelineView || showFullView }" data-app="webrecorder-replay-app">
     <!-- Top navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top top-navbar">
+    <nav
+      class="navbar navbar-light navbar-expand-lg fixed-top top-navbar"
+      :style="navbarBackgroundStyle">
       <a class="navbar-brand" href="/">
         <img :src="config.logoImg" alt="_('pywb logo')">
       </a>
@@ -67,8 +69,9 @@
 
     <!-- Capture title and date -->
     <nav
-      class="navbar navbar-light bg-light justify-content-center title-nav fixed-top"
+      class="navbar navbar-light justify-content-center title-nav fixed-top"
       id="second-navbar"
+      :style="navbarBackgroundStyle"
       v-if="currentSnapshot">
       <span v-if="config.title">{{ config.title }}</span>
       <span class="strong mr-2">{{_('Current Capture')}}:</span>{{currentSnapshot.getTimeDateFormatted()}}
@@ -150,6 +153,11 @@ export default {
     },
     localesAreSet() {
       return Object.entries(this.config.allLocales).length > 0;
+    },
+    navbarBackgroundStyle() {
+      return {
+        '--navbar-background': `#${this.config.navbarBackgroundHash}`,
+      }
     }
   },
   methods: {
@@ -270,6 +278,9 @@ export default {
     /*position: fixed;*/
     /*top: 150px;*/
     left: 0;
+  }
+  .navbar {
+    background-color: var(--navbar-background);
   }
   .top-navbar {
     z-index: 90;
