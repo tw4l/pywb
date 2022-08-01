@@ -70,6 +70,21 @@ For example, to use the file ``./static/my-logo.png`` as the logo, set:
     logo: my-logo.png
 
 
+Banner Color
+^^^^^^^^^^^^
+
+When using the custom banner, it is possible to configure the background color of the header by setting ``ui.vue_navbar_background_hash`` to the color's hex value, with the initial hash symbol (``#``) omitted.
+
+If omitted, ``#f8f9fa`` (Bootstrap 4's ``light``) will be used by default.
+
+For example, to use the color ``#cff3ff`` as the banner color, set:
+
+.. code:: yaml
+
+  ui:
+    vue_navbar_background_hash: cff3ff
+
+
 Updating the Vue UI
 -------------------
 
