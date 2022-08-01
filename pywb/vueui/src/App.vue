@@ -162,7 +162,7 @@ export default {
     },
     navbarBackgroundStyle() {
       return {
-        '--navbar-background': `#${this.config.navbarBackgroundHash}`,
+        '--navbar-background': `#${this.config.navbarBackground}`,
       }
     }
   },

@@ -21,6 +21,7 @@ class CDXLoader {
     this.prefix = prefix;
     this.staticPrefix = staticPrefix;
     this.logoUrl = logoUrl;
+    this.navbarBackground = navbarBackground;
 
     this.isReplay = (timestamp !== undefined);
 
@@ -55,9 +56,8 @@ class CDXLoader {
     }
 
     const logoImg = this.staticPrefix + "/" + (this.logoUrl ? this.logoUrl : "pywb-logo-sm.png");
-    const navbarBackgroundHash = this.navbarBackground ? this.navbarBackground : "f8f9fa";
 
-    this.app = this.initApp({logoImg, navbarBackgroundHash, url, allLocales});
+    this.app = this.initApp({logoImg, navbarBackground, url, allLocales});
     this.loadCDX(queryURL).then((cdxList) => {
       this.setAppData(cdxList, timestamp ? {url, timestamp}:null);
     });
