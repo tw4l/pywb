@@ -4,14 +4,18 @@
       <i
         class="fas fa-arrow-left year-arrow"
         @click="gotoPreviousYear"
-        v-if="previousYear"></i>
+        @keyup.13="gotoPreviousYear"
+        v-if="previousYear"
+        tabindex="0"></i>
       <span class="mx-1">
       {{year.id}} ({{ $root._(year.snapshotCount !== 1 ? '{count} captures':'{count} capture', {count: year.snapshotCount}) }})
       </span>
       <i
         class="fas fa-arrow-right year-arrow"
         @click="gotoNextYear"
-        v-if="nextYear"></i>
+        @keyup.13="gotoNextYear"
+        v-if="nextYear"
+        tabindex="0"></i>
     </h2>
     <div class="months">
       <CalendarMonth
@@ -25,7 +29,10 @@
         @show-day-timeline="setCurrentTimeline"
       ></CalendarMonth>
     </div>
-    <Tooltip :position="currentTimelinePos" v-if="currentTimelinePeriod" ref="timelineLinearTooltip">
+    <Tooltip
+      :position="currentTimelinePos"
+      v-if="currentTimelinePeriod"
+      ref="timelineLinearTooltip">
       <TimelineLinear
         :period="currentTimelinePeriod"
         :current-snapshot="containsCurrentSnapshot ? currentSnapshot : null"
