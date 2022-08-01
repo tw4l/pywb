@@ -35,10 +35,10 @@
           <li class="nav-item ml-1">
             <button
               class="btn btn-sm btn-outline-dark"
-              :class="{active: showTimelineView || showFullView }"
-              :aria-pressed="(showTimelineView || showFullView ? true : false)"
-              @click="setTimelineView"
-              :title="((showTimelineView || showFullView) ? _('Hide timeline') : _('Show timeline'))">
+              :class="{active: showTimelineView }"
+              :aria-pressed="showTimelineView"
+              @click="showTimelineView = !showTimelineView"
+              :title="(showTimelineView ? _('Hide timeline') : _('Show timeline'))">
               <i class="far fa-chart-bar"></i>
             </button>
           </li>
@@ -79,7 +79,7 @@
 
     <!-- Timeline -->
     <div class="card timeline-wrap">
-      <div class="card-body" v-if="showFullView || (currentPeriod && showTimelineView)">
+      <div class="card-body" v-if="currentPeriod && showTimelineView">
         <div class="row">
           <div class="col col-12">
             <TimelineBreadcrumbs
@@ -101,7 +101,7 @@
     </div>
 
     <!-- Calendar -->
-    <div class="card" v-if="showFullView && currentPeriod && currentPeriod.children.length">
+    <div class="card" v-if="currentPeriod && showFullView && currentPeriod.children.length">
       <div class="card-body">
         <CalendarYear
           :period="currentPeriod"
