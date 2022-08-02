@@ -12,6 +12,7 @@
       </form>
       <button
         class="navbar-toggler btn btn-sm"
+        id="collapse-button"
         type="button"
         data-toggle="collapse"
         data-target="#navbarCollapse"
@@ -32,7 +33,7 @@
               <i class="far fa-calendar-alt"></i>
             </button>
           </li>
-          <li class="nav-item ml-1">
+          <li class="nav-item">
             <button
               class="btn btn-sm btn-outline-dark"
               :class="{active: showTimelineView }"
@@ -42,7 +43,7 @@
               <i class="far fa-chart-bar"></i>
             </button>
           </li>
-          <li class="nav-item dropdown ml-1" v-if="localesAreSet">
+          <li class="nav-item dropdown" v-if="localesAreSet">
             <button
               class="btn btn-sm btn-outline-dark dropdown-toggle"
               type="button"
@@ -293,12 +294,24 @@ export default {
     z-index: 90;
     padding: 2px 16px 0 16px;
   }
+  .top-navbar span.navbar-toggler-icon {
+    margin: .25rem !important;
+  }
   .title-nav {
     margin-top: 47px;
     z-index: 80;
   }
   #navbarCollapse {
     justify-content: right;
+  }
+  #navbarCollapse ul#toggles li {
+    margin-top: 5px;
+  }
+  #navbarCollapse:not(.show) ul#toggles li:not(:first-child) {
+    margin-left: .25rem;
+  }
+  #navbarCollapse.show ul#toggles li {
+    margin-left: 0px;
   }
   .iframe iframe {
     width: 100%;
@@ -309,7 +322,7 @@ export default {
   }
   @media (min-width: 576px) {
     #theurl {
-      width: 400px;
+      width: 350px;
     }
   }
   @media (min-width: 768px) {
