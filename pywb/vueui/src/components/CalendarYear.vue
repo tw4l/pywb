@@ -4,7 +4,7 @@
       <i
         class="fas fa-arrow-left year-arrow"
         @click="gotoPreviousYear"
-        @keyup.13="gotoPreviousYear"
+        @keyup.enter="gotoPreviousYear"
         v-if="previousYear"
         tabindex="0"></i>
       <span class="mx-1">
@@ -13,7 +13,7 @@
       <i
         class="fas fa-arrow-right year-arrow"
         @click="gotoNextYear"
-        @keyup.13="gotoNextYear"
+        @keyup.enter="gotoNextYear"
         v-if="nextYear"
         tabindex="0"></i>
     </h2>
@@ -135,7 +135,13 @@ export default {
       if (!day) {
         return;
       }
-      this.currentTimelinePos = `${event.x},${event.y}`;
+      if (event.code === "Enter") {
+        let middleXPos = (window.innerWidth / 2) - 60;
+        this.currentTimelinePos = `${middleXPos},200`;
+      } else {
+        this.currentTimelinePos = `${event.x},${event.y}`;
+      }
+      
       event.stopPropagation();
       event.preventDefault();
     },

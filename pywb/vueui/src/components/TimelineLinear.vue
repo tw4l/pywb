@@ -10,7 +10,7 @@
         <a
           :href="$root.config.prefix + snapshotPeriod.id + '/' + $root.config.url"
           class="link"
-          @keyup.13="gotoSnapshot(snapshotPeriod)"
+          @keyup.enter="gotoSnapshot(snapshotPeriod)"
           tabindex="1">
           {{ snapshotPeriod.snapshot.getTimeFormatted() }}
         </a>
@@ -51,6 +51,7 @@ export default {
   background-color: white;
   border: 1px solid gray;
   border-radius: 5px;
+  z-index: 1100;
 }
 .timeline-linear .list {
   max-height: 80vh;
