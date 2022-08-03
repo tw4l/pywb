@@ -30,7 +30,7 @@
               :aria-pressed="(showFullView ? true : false)"
               @click="showFullView = !showFullView"
               :title="(showFullView ? _('Hide calendar') : _('Show calendar'))">
-              <i class="far fa-calendar-alt"></i>
+              <i class="far fa-calendar-alt" :title="_('Calendar')"></i>
             </button>
           </li>
           <li class="nav-item">
@@ -40,7 +40,7 @@
               :aria-pressed="showTimelineView"
               @click="showTimelineView = !showTimelineView"
               :title="(showTimelineView ? _('Hide timeline') : _('Show timeline'))">
-              <i class="far fa-chart-bar"></i>
+              <i class="far fa-chart-bar" :title="_('Timeline')"></i>
             </button>
           </li>
           <li class="nav-item dropdown" v-if="localesAreSet">
@@ -52,7 +52,7 @@
               aria-haspopup="true"
               aria-expanded="false"
               :title="_('Select language')">
-              <i class="fas fa-globe-africa"></i>
+              <i class="fas fa-globe-africa" :title="_('Language')"></i>
             </button>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="locale-dropdown">
               <a
