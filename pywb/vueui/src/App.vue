@@ -3,7 +3,7 @@
     <!-- Top navbar -->
     <nav
       class="navbar navbar-light navbar-expand-lg fixed-top top-navbar"
-      :style="navbarBackgroundStyle">
+      :style="navbarStyle">
       <a class="navbar-brand" href="/">
         <img :src="config.logoImg" alt="_('pywb logo')">
       </a>
@@ -72,7 +72,7 @@
     <nav
       class="navbar navbar-light justify-content-center title-nav fixed-top"
       id="second-navbar"
-      :style="navbarBackgroundStyle"
+      :style="navbarStyle"
       v-if="currentSnapshot">
       <span class="strong mr-1">
         {{_('Current Capture')}}: 
@@ -161,9 +161,10 @@ export default {
     localesAreSet() {
       return Object.entries(this.config.allLocales).length > 0;
     },
-    navbarBackgroundStyle() {
+    navbarStyle() {
       return {
         '--navbar-background': `#${this.config.navbarBackground}`,
+        '--navbar-color': `#${this.config.navbarColor}`
       }
     }
   },
@@ -289,6 +290,7 @@ export default {
   }
   .navbar {
     background-color: var(--navbar-background);
+    color:  var(--navbar-color);
   }
   .top-navbar {
     z-index: 90;
