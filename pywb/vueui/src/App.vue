@@ -25,8 +25,8 @@
         <ul class="navbar-nav my-2 ml-3" id="toggles">
           <li class="nav-item active">
             <button
-              class="btn btn-sm btn-outline-dark"
-              :class="{active: showFullView}"
+              class="btn btn-sm"
+              :class="{active: showFullView, 'btn-outline-light': lightButtons, 'btn-outline-dark': !lightButtons}"
               :aria-pressed="(showFullView ? true : false)"
               @click="showFullView = !showFullView"
               :title="(showFullView ? _('Hide calendar') : _('Show calendar'))">
@@ -35,8 +35,8 @@
           </li>
           <li class="nav-item">
             <button
-              class="btn btn-sm btn-outline-dark"
-              :class="{active: showTimelineView }"
+              class="btn btn-sm"
+              :class="{active: showTimelineView, 'btn-outline-light': lightButtons, 'btn-outline-dark': !lightButtons}"
               :aria-pressed="showTimelineView"
               @click="showTimelineView = !showTimelineView"
               :title="(showTimelineView ? _('Hide timeline') : _('Show timeline'))">
@@ -45,7 +45,8 @@
           </li>
           <li class="nav-item dropdown" v-if="localesAreSet">
             <button
-              class="btn btn-sm btn-outline-dark dropdown-toggle"
+              class="btn btn-sm dropdown-toggle"
+              :class="{'btn-outline-light': lightButtons, 'btn-outline-dark': !lightButtons}"
               type="button"
               id="locale-dropdown"
               data-toggle="dropdown"
@@ -166,6 +167,9 @@ export default {
         '--navbar-background': `#${this.config.navbarBackground}`,
         '--navbar-color': `#${this.config.navbarColor}`
       }
+    },
+    lightButtons() {
+      return this.config.navbarLightButtons === true;
     }
   },
   methods: {
