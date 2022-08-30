@@ -52,7 +52,7 @@
       },
     };
 
-  VueUI.main("{{ static_prefix }}", "{{ url }}", "{{ prefix }}", undefined, "{{ ui.logo }}", "{{ ui.vue_navbar_background_hash | default('f8f9fa') }}", "{{ env.pywb_lang | default('en') }}",
+  VueUI.main("{{ static_prefix }}", "{{ url }}", "{{ prefix }}", undefined, "{{ ui.logo }}", "{{ ui.navbar_background_hex | default('f8f9fa') }}", "{{ ui.navbar_color_hex | default('212529') }}", "{{ env.pywb_lang | default('en') }}",
       allLocales, i18nStrings);
 
 </script>
