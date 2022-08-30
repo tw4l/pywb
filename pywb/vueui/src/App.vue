@@ -171,7 +171,7 @@ export default {
       }
     },
     lightButtons() {
-      return this.config.navbarLightButtons == true;
+      return !!this.config.navbarLightButtons;
     }
   },
   methods: {
