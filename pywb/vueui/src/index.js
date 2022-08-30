@@ -7,14 +7,14 @@ import Vue from "vue/dist/vue.esm.browser";
 
 
 // ===========================================================================
-export function main(staticPrefix, url, prefix, timestamp, logoUrl, navbarBackground, navbarColor, locale, allLocales, i18nStrings) {
+export function main(staticPrefix, url, prefix, timestamp, logoUrl, navbarBackground, navbarColor, navbarLightButtons, locale, allLocales, i18nStrings) {
   PywbI18N.init(locale, i18nStrings);
-  new CDXLoader(staticPrefix, url, prefix, timestamp, logoUrl, navbarBackground, navbarColor, allLocales);
+  new CDXLoader(staticPrefix, url, prefix, timestamp, logoUrl, navbarBackground, navbarColor, navbarLightButtons, allLocales);
 }
 
 // ===========================================================================
 class CDXLoader {
-  constructor(staticPrefix, url, prefix, timestamp, logoUrl, navbarBackground, navbarColor, allLocales) {
+  constructor(staticPrefix, url, prefix, timestamp, logoUrl, navbarBackground, navbarColor, navbarLightButtons, allLocales) {
     this.loadingSpinner = null;
     this.loaded = false;
     this.opts = {};
@@ -23,6 +23,7 @@ class CDXLoader {
     this.logoUrl = logoUrl;
     this.navbarBackground = navbarBackground;
     this.navbarColor = navbarColor;
+    this.navbarLightButtons = navbarLightButtons
 
     this.isReplay = (timestamp !== undefined);
 
@@ -58,7 +59,7 @@ class CDXLoader {
 
     const logoImg = this.staticPrefix + "/" + (this.logoUrl ? this.logoUrl : "pywb-logo-sm.png");
 
-    this.app = this.initApp({logoImg, navbarBackground, navbarColor, url, allLocales});
+    this.app = this.initApp({logoImg, navbarBackground, navbarColor, navbarLightButtons, url, allLocales});
     this.loadCDX(queryURL).then((cdxList) => {
       this.setAppData(cdxList, timestamp ? {url, timestamp}:null);
     });
