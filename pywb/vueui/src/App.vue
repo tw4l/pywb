@@ -73,16 +73,18 @@
     <nav
       class="navbar navbar-light justify-content-center title-nav fixed-top"
       id="second-navbar"
-      :style="navbarStyle"
-      v-if="currentSnapshot">
-      <span class="strong mr-1">
-        {{_('Current Capture')}}: 
-        <span class="ml-1" v-if="config.title">
-          {{ config.title }}
+      :style="navbarStyle">
+      <span class="hidden">.</span>
+      <span v-if="currentSnapshot">
+        <span class="strong mr-1">
+          {{_('Current Capture')}}: 
+          <span class="ml-1" v-if="config.title">
+            {{ config.title }}
+          </span>
         </span>
+        <span class="mr-1" v-if="config.title">,</span>
+        {{currentSnapshot.getTimeDateFormatted()}}
       </span>
-      <span class="mr-1" v-if="config.title">,</span>
-      {{currentSnapshot.getTimeDateFormatted()}}
     </nav>
 
     <!-- Timeline -->
@@ -307,6 +309,9 @@ export default {
     margin-top: 47px;
     z-index: 80;
   }
+  #secondNavbar {
+    height: 24px !important;
+  }
   #navbarCollapse {
     justify-content: right;
   }
@@ -369,5 +374,8 @@ export default {
   }
   .strong {
     font-weight: bold;
+  }
+  .hidden {
+    color: var(--navbar-background);
   }
 </style>
