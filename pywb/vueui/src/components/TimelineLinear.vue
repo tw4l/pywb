@@ -35,7 +35,10 @@ export default {
   },
   methods: {
     isCurrentSnapshot(period) {
-      return this.currentSnapshot && this.currentSnapshot.id === period.snapshot.id;
+      if (!!this.currentSnapshot && !!period.snapshot) {
+        return this.currentSnapshot && this.currentSnapshot.id === period.snapshot.id;
+      }
+      return false;
     },
     gotoSnapshot(period) {
       this.$app.gotoSnapshot(period, this.period);
