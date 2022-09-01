@@ -6,7 +6,9 @@ debug: true
 # Uncomment to set banner colors and logo
 # ui:
   # logo: path/relative/from/static/directory/example.txt
-  # vue_navbar_background_hash: f8f9fa
+  # navbar_background_hex: f8f9fa
+  # navbar_color_hex: 000
+  # navbar_light_buttons: true
 
 collections:
     all: $all
