@@ -39,7 +39,7 @@ The new banner should allow for faster navigation across multiple captures.
 Custom Logo
 ^^^^^^^^^^^
 
-It is possible to configure a custom logo by setting ``ui.logo`` to a static file.
+It is possible to configure a custom logo by setting ``ui.logo`` in ``config.yaml`` to a static file.
 
 If omitted, the standard pywb logo will be used by default.
 
@@ -58,7 +58,7 @@ Banner Colors
 
 It is possible to configure the background color, text color, and button outlines of the header by setting values in the ``ui`` section of ``config.yaml``.
 
-To customize the header background color, set``ui.navbar_background_hex`` to the color's hex value, with the initial hash symbol (``#``) omitted. If omitted, ``#f8f9fa`` (Bootstrap 4's ``light``) will be used by default.
+To customize the header background color, set ``ui.navbar_background_hex`` to the color's hex value, with the initial hash symbol (``#``) omitted. If omitted, ``#f8f9fa`` (Bootstrap 4's ``light``) will be used by default.
 
 For example, to use the color ``#cff3ff`` as the banner color, set:
 
