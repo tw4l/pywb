@@ -7,13 +7,13 @@
 
     <div class="list">
       <div v-for="snapshotPeriod in snapshotPeriods">
-        <a
-          :href="$root.config.prefix + snapshotPeriod.id + '/' + $root.config.url"
+        <span
+          @click="changePeriod(snapshotPeriod)"
+          @keyup.enter="changePeriod(snapshotPeriod)"
           class="link"
-          @keyup.enter="gotoSnapshot(snapshotPeriod)"
           tabindex="1">
           {{ snapshotPeriod.snapshot.getTimeFormatted() }}
-        </a>
+        </span>
         <span v-if="isCurrentSnapshot(period)" class="current">{{$root._('current')}}</span>
       </div>
     </div>
@@ -40,8 +40,8 @@ export default {
       }
       return false;
     },
-    gotoSnapshot(period) {
-      this.$app.gotoSnapshot(period, this.period);
+    changePeriod(period) {
+      this.$emit("goto-period", period);
     }
   }
 }

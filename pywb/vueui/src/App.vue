@@ -27,6 +27,26 @@
             <button
               class="btn btn-sm"
               :class="{active: showFullView, 'btn-outline-light': lightButtons, 'btn-outline-dark': !lightButtons}"
+              :title="_('Previous capture')"
+              v-if="previousSnapshot"
+              @click="gotoPreviousSnapshot">
+              <i class="fas fa-arrow-left" :title="_('Previous capture')"></i>
+            </button>
+          </li>
+          <li class="nav-item active">
+            <button
+              class="btn btn-sm"
+              :class="{active: showFullView, 'btn-outline-light': lightButtons, 'btn-outline-dark': !lightButtons}"
+              :title="_('Next capture')"
+              v-if="nextSnapshot"
+              @click="gotoNextSnapshot">
+              <i class="fas fa-arrow-right" :title="_('Next capture')"></i>
+            </button>
+          </li>
+          <li class="nav-item active">
+            <button
+              class="btn btn-sm"
+              :class="{active: showFullView, 'btn-outline-light': lightButtons, 'btn-outline-dark': !lightButtons}"
               :aria-pressed="(showFullView ? true : false)"
               @click="showFullView = !showFullView"
               :title="(showFullView ? _('Hide calendar') : _('Show calendar'))">
@@ -140,6 +160,7 @@ export default {
       snapshots: [],
       currentPeriod: null,
       currentSnapshot: null,
+      currentSnapshotIndex: null,
       msgs: [],
       showFullView: true,
       showTimelineView: true,
@@ -172,6 +193,18 @@ export default {
     },
     lightButtons() {
       return !!this.config.navbarLightButtons;
+    },
+    previousSnapshot() {
+      if (!!this.currentSnapshotIndex && this.currentSnapshotIndex > 0) {
+        return this.snapshots[this.currentSnapshotIndex - 1];
+      }
+      return null;
+    },
+    nextSnapshot() {
+      if (!!this.currentSnapshotIndex && this.currentSnapshotIndex > -1 && this.currentSnapshotIndex < this.snapshots.length - 1) {
+        return this.snapshots[this.currentSnapshotIndex + 1];
+      }
+      return null;
     }
   },
   methods: {
@@ -204,6 +237,9 @@ export default {
     gotoSnapshot(snapshot, fromPeriod, reloadIFrame=false) {
       this.currentSnapshot = snapshot;
 
+      const isCurrentSnapshot = (snapshotInArray) => snapshotInArray.id == snapshot.id && snapshotInArray.url == snapshot.url;
+      this.currentSnapshotIndex = this.snapshots.findIndex(isCurrentSnapshot);
+
       // if the current period doesn't match the current snapshot, update it
       if (fromPeriod && !this.currentPeriod.contains(fromPeriod)) {
         const fromPeriodAtMaxZoomLevel = fromPeriod.get(this.maxTimelineZoomLevel);
@@ -219,6 +255,12 @@ export default {
         this.$emit("show-snapshot", snapshot);
       }
       this.hideBannerUtilities();
+    },
+    gotoPreviousSnapshot() {
+      this.gotoSnapshot(this.previousSnapshot, this.currentPeriod, true /* reloadIFrame */);
+    },
+    gotoNextSnapshot() {
+      this.gotoSnapshot(this.nextSnapshot, this.currentPeriod, true /* reloadIFrame */);
     },
     gotoUrl(event) {
       event.preventDefault();
@@ -258,7 +300,7 @@ export default {
 
       this.config.url = view.url;
 
-      this.gotoSnapshot(snapshot);
+      this.gotoSnapshot(snapshot, snapshot.currentPeriod);
     },
     setTimelineView() {
       this.showTimelineView = !this.showTimelineView;
