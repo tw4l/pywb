@@ -5,9 +5,9 @@ debug: true
 
 # Uncomment to set banner colors and logo
 # ui:
-  # logo: path/relative/from/static/directory/example.txt
-  # navbar_background_hex: f8f9fa
-  # navbar_color_hex: 000
+  # logo: path/relative/from/static/logo.png
+  # navbar_background_hex: 0c49b0
+  # navbar_color_hex: fff
   # navbar_light_buttons: true
 
 collections:
